@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        .img {
+            width: 65%;
+            height: 35vh;
+            /* border-radius: 50%; */
+            /* padding-left: 30%; */
+            /* box-shadow: 0 0 10px rgba(0,0,0,.2); */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center text-primary mt-3">Know About Countries</h1>
+        <div class="row mt-5 p-lg-3 p-sm-3">
+            <div class="col-lg-4 mt-lg-5 p-lg-3">
+                <form class="border ">
+                    <div class="my-5  p-4 d-lg-flex d-sm-flex justify-content-center">
+                        <div class="me-lg-2 me-sm-2">
+                            <input type="text" id="input" class="form-control " placeholder="Enter Country Name">
+                        </div>
+                        <button type="button" onclick="search()" class="btn btn-primary my-3 my-sm-0">Search</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-8 pe-sm-5" id="result">
+
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    async function search() {
+        name = input.value
+        if (name) {
+            var country = await fetch(`https://restcountries.com/v3.1/name/${name}?fullText=true`)
+            country.json().then((data) => {
+                display(data)
+            })
+        } else {
+            alert("Please Enter country name in the Text Box")
+        }
+    }
+    function display(data) {
+        data = data[0]
+        currencies = Object.values(data.currencies)    //Converting  Object of Object to Array Method -: Object.values()
+        console.log(data.startOfWeek);
+        result.innerHTML = `
+        <div class="card w-sm-75 m-sm-5">
+  <img src=${data.flags.svg} class="card-img-top " alt="...">
+  <div class="card-body">
+    <h1>${data.name.common}</h1>
+    <h2>${data.name.official}</h2>
+    <p class="card-text">${data.flags.alt}</p>
+    <h5 class="card-title">Capital : ${data.capital}</h5>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">Population : <b>${data.population}</b></li>
+    <li class="list-group-item">Currency : <b>${currencies[0].name}</b> &nbsp; Symbol : <b>${currencies[0].symbol}</b></li>
+    <li class="list-group-item">Region : <b>${data.region}</b> &nbsp; SubRegion : <b>${data.subregion}</b></li>
+    <li class="list-group-item">Languages : <b>${Object.values(data.languages)}</b></li>
+    <li class="list-group-item">Start Of Week : <b>${data.startOfWeek}</b></li>
+  </ul>
+  <div class="card-body">
+    <h2>Coat Of Arms</h2>
+    <div class=" d-flex justify-content-center">
+    <img src=${data.coatOfArms.svg} class=" img " alt="...">
+    </div>
+  </div>
+</div>
+        `
+    }
+</script>
+</html>
